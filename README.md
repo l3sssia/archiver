@@ -1,5 +1,60 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-718a45dd9cf7e7f842a935f5ebbe5719a5e09af4491e668f4dbf3b35d5cca122.svg)](https://classroom.github.com/online_ide?assignment_repo_id=13285336&assignment_repo_type=AssignmentRepo)
-# Лабораторная работа 6
+[English Description](#english-description) | [Описание на русском языке](#russian-description)
+
+# Hamming Archiver
+
+# <a id="english-description">ITMO Laboratory Work</a>
+
+## Task
+
+Implement an error-resistant file archiver without compression, **HamArc**, that combines multiple files into a single archive. Use [Hamming Codes](https://en.wikipedia.org/wiki/Hamming_code) for error-resistant encoding. The data storage format in the archive is also part of the task.
+
+## Requirements
+
+* Combine multiple files (>= 1) into a single archive in the `.haf` format (Hamming Archive File)
+* Extract all or specific files from the archive
+* Merge multiple archives into one
+* Recover the archive in case of damage, or report if recovery is impossible
+* Return a list of files in the archive
+
+## Implementation
+
+A console application supporting the following command-line arguments:
+
+**-c, --create**           - create a new archive
+
+**-f, --file=[ARHCNAME]**  - name of the archive file
+
+**-l, --list**             - display the list of files in the archive
+
+**-x, --extract**          - extract files from the archive (if not specified, all files)
+
+**-a, --append**           - add a file to the archive
+
+**-d, --delete**           - delete a file from the archive
+
+**-A, --concatenate**      - merge two archives
+
+**File names are passed as free arguments**
+
+**Arguments for encoding and decoding are also passed via the command line** (The names and types of arguments are part of the task)
+
+### Examples of execution
+
+*hamming_code --create --file=ARCHIVE FILE1 FILE2 FILE3*
+
+*hamming_code -l -f ARCHIVE*
+
+*hamming_code --concatenate ARCHIVE1 ARCHIVE2 -f ARCHIVE3*
+
+## NB
+
+- Files for archiving can be very large
+- Operations must work optimally (this affects the final grade for the work)
+- The code must be structured and logically divided into modules (this affects the final grade for the work)
+- Think about how to decompose the task
+- Using tests will be an advantage
+
+# <a id="russian-description">ИТМО Лабораторная работа</a>
 
 ## Задача
 
@@ -37,11 +92,11 @@
 
 ### Примеры запуска
 
-*hamarc --create --file=ARCHIVE FILE1 FILE2 FILE3*
+*hamming_code --create --file=ARCHIVE FILE1 FILE2 FILE3*
 
-*hamarc -l -f ARCHIVE*
+*hamming_code -l -f ARCHIVE*
 
-*hamarc --concantenate  ARCHIVE1 ARCHIVE2 -f ARCHIVE3*
+*hamming_code --concantenate  ARCHIVE1 ARCHIVE2 -f ARCHIVE3*
 
 
 ## NB
@@ -52,9 +107,3 @@
 - Подумайте как можно декомпозировать задачу
 - Использование тестов будет являться приимуществом
 
-
-## Deadline
-
-1. 19.12.23 24:00 - 0.8
-2. 26.12.23 24:00 - 0.65
-3. 02.01.24 24:00 - 0.5
