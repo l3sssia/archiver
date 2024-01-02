@@ -1,0 +1,4 @@
+class hamming_code {
+
+};
+
