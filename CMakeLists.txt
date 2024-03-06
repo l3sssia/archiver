@@ -11,5 +11,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 
 add_subdirectory(lib)
+add_subdirectory(argparser)
+add_subdirectory(src)
 
-add_executable(labwork6 hamarc.cpp)
+add_executable(labwork6 src/hamarc.cpp)
