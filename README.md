@@ -37,11 +37,11 @@
 
 ### Примеры запуска
 
-*hamarc --create --file=ARCHIVE FILE1 FILE2 FILE3*
+*hamming_code --create --file=ARCHIVE FILE1 FILE2 FILE3*
 
-*hamarc -l -f ARCHIVE*
+*hamming_code -l -f ARCHIVE*
 
-*hamarc --concantenate  ARCHIVE1 ARCHIVE2 -f ARCHIVE3*
+*hamming_code --concantenate  ARCHIVE1 ARCHIVE2 -f ARCHIVE3*
 
 
 ## NB

@@ -53,6 +53,11 @@ bool ArgParser::ParseLongOption(const std::string& arg) const {
 }
 
 bool ArgParser::Parse(const std::vector<std::string>& args) {
+//    for(auto i : string_args_) {
+//        if (i.IsPositional()) {
+//            positional_string_ = &i;
+//        }
+//    }
     int last_positional = 0;
     for (size_t i = 1; i < args.size(); i++) {
         if (args.empty()) {
@@ -176,11 +181,10 @@ bool ArgParser::Help() {
 }
 
 bool ArgParser::FillPositional(const std::string& value, int& begin) {
-    for (size_t i = begin; i < arguments_.size(); i++) {
-        if (arguments_[i]->IsPositional()) {
-            std::string name = arguments_[i]->GetName();
+    for (size_t i = begin; i < arg_names_.size(); i++) {
+            std::string name = arg_names_[i];
             IntArgument* int_arg = FindIntArgument(name);
-            if (int_arg != nullptr) {
+            if (int_arg != nullptr && int_arg->IsPositional()) {
                 int_arg->PutValue(stoi(value));
                 begin = i;
                 if (!int_arg->IsMultiValue()) {
@@ -189,7 +193,7 @@ bool ArgParser::FillPositional(const std::string& value, int& begin) {
                 return true;
             }
             StringArgument* string_arg = FindStringArgument(name);
-            if (string_arg != nullptr) {
+            if (string_arg != nullptr && string_arg->IsPositional()) {
                 string_arg->PutValue(value);
                 begin = i;
                 if (!string_arg->IsMultiValue()) {
@@ -197,8 +201,7 @@ bool ArgParser::FillPositional(const std::string& value, int& begin) {
                 }
                 return true;
             }
-            return false; // somehow
-        }
+            //return false; // somehow
     }
     return false;
 }
@@ -272,42 +275,48 @@ bool ArgParser::ParseFlags(const std::string& arg) {
 StringArgument& ArgParser::AddStringArgument(const std::string& name, const std::string& description) {
     string_args_.emplace_back(name, description);
     StringArgument* arg = &string_args_.back();
-    arguments_.push_back(arg);
+    //arguments_.push_back(arg);
+    arg_names_.push_back(name);
     return *arg;
 }
 
 StringArgument& ArgParser::AddStringArgument(const char& short_name, const std::string& name, const std::string& description) {
     string_args_.emplace_back(name, description, short_name);
     StringArgument* arg = &string_args_.back();
-    arguments_.push_back(arg);
+    //arguments_.push_back(arg);
+    arg_names_.push_back(name);
     return *arg;
 }
 
 IntArgument& ArgParser::AddIntArgument(const std::string& name, const std::string& description) {
     int_args_.emplace_back(name, description);
     IntArgument* arg = &int_args_.back();
-    arguments_.push_back(arg);
+    //arguments_.push_back(arg);
+    arg_names_.push_back(name);
     return *arg;
 }
 
 IntArgument& ArgParser::AddIntArgument(const char& short_name, const std::string& name, const std::string& description) {
     int_args_.emplace_back(name, description, short_name);
     IntArgument* arg = &int_args_.back();
-    arguments_.push_back(arg);
+    //arguments_.push_back(arg);
+    arg_names_.push_back(name);
     return *arg;
 }
 
 Flag& ArgParser::AddFlag(const std::string& name, const std::string& description) {
     flags_.emplace_back(name, description);
     Flag* arg = &flags_.back();
-    arguments_.push_back(arg);
+    //arguments_.push_back(arg);
+    arg_names_.push_back(name);
     return *arg;
 }
 
 Flag& ArgParser::AddFlag(const char& short_name, const std::string& name, const std::string& description) {
     flags_.emplace_back(name, description, short_name);
     Flag* arg = &flags_.back();
-    arguments_.push_back(arg);
+    //arguments_.push_back(arg);
+    arg_names_.push_back(name);
     return *arg;
 }
 

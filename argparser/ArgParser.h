@@ -36,7 +36,8 @@ namespace ArgumentParser {
         std::vector<Flag> flags_{};
         std::vector<IntArgument> int_args_{};
         std::vector<StringArgument> string_args_{};
-        std::vector<Argument*> arguments_{}; // Вектор всех аргументов
+        //std::vector<Argument*> arguments_{}; // Вектор всех аргументов
+        std::vector<std::string> arg_names_{};
         std::string help_string_; // Описание программы
         Flag* help_argument_ = nullptr; // Флаг, отвечающий за help
         ArgParser() = default;
@@ -55,6 +56,7 @@ namespace ArgumentParser {
         bool FillPositional(const std::string& value, int& begin);
         bool ParseFlags(const std::string& arg);
         bool CheckFilledArgs();
+        //StringArgument* positional_string_;
     };
 
 } // namespace ArgumentParser

@@ -1,5 +1,4 @@
-add_library(hamarc
+add_library(archiver
         archiver.cpp
-        hamming_code.cpp
-        bitstream.cpp
-        bitstream.h)
+        bitstream.h
+)

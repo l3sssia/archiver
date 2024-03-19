@@ -9,11 +9,11 @@ namespace ArgumentParser {
      public:
         Argument() = default;
         Argument(std::string  name, std::string description, const char& short_name);
-        virtual char GetShortName() const final;
-        virtual std::string GetName() const final;
-        virtual std::string GetHelp() const = 0;
+        [[nodiscard]] virtual char GetShortName() const;
+        [[nodiscard]] virtual std::string GetName() const;
+        [[nodiscard]] virtual std::string GetHelp() const = 0;
         virtual Argument& Positional();
-        bool IsPositional() const;
+        [[nodiscard]] bool IsPositional() const;
      protected:
         std::string name_;
         char short_name_ = '\0';
@@ -25,8 +25,8 @@ namespace ArgumentParser {
      public:
         StringArgument();
         explicit StringArgument(const std::string& name, const std::string& description = "", const char& short_name = kDefaultShortName);
-        std::string GetValue(size_t idx = 0) const;
-        std::string GetHelp() const override;
+        [[nodiscard]] std::string GetValue(size_t idx = 0) const;
+        [[nodiscard]] std::string GetHelp() const override;
         StringArgument& PutValue(const std::string& value);
         StringArgument& StoreValue(std::string& value);
         StringArgument& StoreValues(std::vector<std::string>& values);
@@ -81,9 +81,11 @@ namespace ArgumentParser {
         Flag& StoreValue(bool& value);
         Flag& Default(const bool& value);
      private:
+        bool is_stored_ = false;
+        bool is_defaulted_ = false;
         bool default_value_ = false;
         bool value_ = false;
-        bool* stored_value_ = &value_;  // указатель на значение, которое нужно хранить
+        bool* stored_value_ = nullptr;  // указатель на значение, которое нужно хранить
     };
 
 } // ArgumentParser

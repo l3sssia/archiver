@@ -118,16 +118,27 @@ Flag::Flag(const std::string& name, const std::string& description, const char& 
     : Argument(name, description, short_name) {}
 
 bool Flag::GetValue() const {
-    return *stored_value_;
+    if (is_stored_) {
+        return *stored_value_;
+    }
+    if (is_defaulted_) {
+        return default_value_;
+    }
+    return value_;
 }
 
 Flag& Flag::StoreValue(bool& value) {
     stored_value_ = &value;
+    is_stored_ = true;
     return *this;
 }
 
 Flag& Flag::PutValue(bool value) {
-    *stored_value_ = value;
+    if (is_stored_) {
+        *stored_value_ = value;
+    } else {
+        value_ = value;
+    }
     return *this;
 }
 
