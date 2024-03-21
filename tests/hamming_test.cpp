@@ -3,8 +3,7 @@
 #include "lib/archiver.h"
 #include <string>
 
-#define block_size 256
-//#define info_size 248
+#define block_size 128
 
 std::string bin(const char* str, size_t size) {
     std::string res;
@@ -316,11 +315,6 @@ TEST(HammingArchiveTestSuite, AppendTest) {
     std::string filename1 = "files/test_text";
     std::string filename2 = "files/test_image.jpg";
     WriteDataToFile(test_file_name, test_file_text);
-//    archiver::Archiver archive1(archive_filename_1,
-//                                {test_file_name},
-//                                block_size);
-//    archive1.Create();
-//    std::filesystem::remove(test_file_name);
     std::string archive_filename = "test_archive_2.haf";
     archiver::Archiver archive(archive_filename, {filename1, filename2}, block_size);
     archive.Create();

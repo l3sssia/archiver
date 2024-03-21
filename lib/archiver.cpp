@@ -27,23 +27,23 @@ archiver::Archiver &archiver::Archiver::Create() {
 std::vector<std::pair<std::string, uint64_t>> archiver::Archiver::List() {
     std::vector<std::pair<std::string, uint64_t>> list;
     if (block_size_ == 512) {
-        ArchiveReader<512, 496, HammingCoder<512, 496>> archive(archive_name_);
+        HammingReader512 archive(archive_name_);
         list = archive.GetFilesList();
         archive.Close();
     } else if (block_size_ == 256) {
-        ArchiveReader<256, 240, HammingCoder<256, 240>> archive(archive_name_);
+        HammingReader256 archive(archive_name_);
         list = archive.GetFilesList();
         archive.Close();
     } else if (block_size_ == 128) {
-        ArchiveReader<128, 120, HammingCoder<128, 120>> archive(archive_name_);
+        HammingReader128 archive(archive_name_);
         list = archive.GetFilesList();
         archive.Close();
     } else if (block_size_ == 64) {
-        ArchiveReader<64, 56, HammingCoder<64, 56>> archive(archive_name_);
+        HammingReader64 archive(archive_name_);
         list = archive.GetFilesList();;
         archive.Close();
     } else if (block_size_ == 32) {
-        ArchiveReader<32, 24, HammingCoder<32, 24>> archive(archive_name_);
+        HammingReader32 archive(archive_name_);
         list = archive.GetFilesList();
         archive.Close();
     }
@@ -51,23 +51,23 @@ std::vector<std::pair<std::string, uint64_t>> archiver::Archiver::List() {
 }
 archiver::Archiver &archiver::Archiver::AddFiles() {
     if (block_size_ == 512) {
-        ArchiveWriter<512, 496, HammingCoder<512, 496>> archive(archive_name_, false);
+        HammingWriter512 archive(archive_name_, false);
         archive.AddFiles(files_);
         archive.Close();
     } else if (block_size_ == 256) {
-        ArchiveWriter<256, 240, HammingCoder<256, 240>> archive(archive_name_, false);
+        HammingWriter256 archive(archive_name_, false);
         archive.AddFiles(files_);
         archive.Close();
     } else if (block_size_ == 128) {
-        ArchiveWriter<128, 120, HammingCoder<128, 120>> archive(archive_name_, false);
+        HammingWriter128 archive(archive_name_, false);
         archive.AddFiles(files_);
         archive.Close();
     } else if (block_size_ == 64) {
-        ArchiveWriter<64, 56, HammingCoder<64, 56>> archive(archive_name_, false);
+        HammingWriter64 archive(archive_name_, false);
         archive.AddFiles(files_);
         archive.Close();
     } else if (block_size_ == 32) {
-        ArchiveWriter<32, 24, HammingCoder<32, 24>> archive(archive_name_, false);
+        HammingWriter32 archive(archive_name_, false);
         archive.AddFiles(files_);
         archive.Close();
     }
@@ -75,7 +75,7 @@ archiver::Archiver &archiver::Archiver::AddFiles() {
 }
 archiver::Archiver &archiver::Archiver::ExtractFiles() {
     if (block_size_ == 512) {
-        ArchiveReader<512, 496, HammingCoder<512, 496>> archive(archive_name_);
+        HammingReader512 archive(archive_name_);
         if (files_.empty()) {
             archive.ExtractFiles();
         } else {
@@ -83,7 +83,7 @@ archiver::Archiver &archiver::Archiver::ExtractFiles() {
         }
         archive.Close();
     } else if (block_size_ == 256) {
-        ArchiveReader<256, 240, HammingCoder<256, 240>> archive(archive_name_);
+        HammingReader256 archive(archive_name_);
         if (files_.empty()) {
             archive.ExtractFiles();
         } else {
@@ -91,7 +91,7 @@ archiver::Archiver &archiver::Archiver::ExtractFiles() {
         }
         archive.Close();
     } else if (block_size_ == 128) {
-        ArchiveReader<128, 120, HammingCoder<128, 120>> archive(archive_name_);
+        HammingReader128 archive(archive_name_);
         if (files_.empty()) {
             archive.ExtractFiles();
         } else {
@@ -99,7 +99,7 @@ archiver::Archiver &archiver::Archiver::ExtractFiles() {
         }
         archive.Close();
     } else if (block_size_ == 64) {
-        ArchiveReader<128, 120, HammingCoder<128, 120>> archive(archive_name_);
+        HammingReader128 archive(archive_name_);
         if (files_.empty()) {
             archive.ExtractFiles();
         } else {
@@ -107,7 +107,7 @@ archiver::Archiver &archiver::Archiver::ExtractFiles() {
         }
         archive.Close();
     } else if (block_size_ == 32) {
-        ArchiveReader<32, 24, HammingCoder<32, 24>> archive(archive_name_);
+        HammingReader32 archive(archive_name_);
         if (files_.empty()) {
             archive.ExtractFiles();
         } else {
@@ -120,23 +120,23 @@ archiver::Archiver &archiver::Archiver::ExtractFiles() {
 
 archiver::Archiver &archiver::Archiver::DeleteFiles() {
     if (block_size_ == 512) {
-        ArchiveReader<512, 496, HammingCoder<512, 496>> archive(archive_name_);
+        HammingReader512 archive(archive_name_);
         archive.DeleteFiles(files_);
         archive.Close();
     } else if (block_size_ == 256) {
-        ArchiveReader<256, 240, HammingCoder<256, 240>> archive(archive_name_);
+        HammingReader256 archive(archive_name_);
         archive.DeleteFiles(files_);
         archive.Close();
     } else if (block_size_ == 128) {
-        ArchiveReader<128, 120, HammingCoder<128, 120>> archive(archive_name_);
+        HammingReader128 archive(archive_name_);
         archive.DeleteFiles(files_);
         archive.Close();
     } else if (block_size_ == 64) {
-        ArchiveReader<64, 56, HammingCoder<64, 56>> archive(archive_name_);
+        HammingReader64 archive(archive_name_);
         archive.DeleteFiles(files_);
         archive.Close();
     } else if (block_size_ == 32) {
-        ArchiveReader<32, 24, HammingCoder<32, 24>> archive(archive_name_);
+        HammingReader32 archive(archive_name_);
         archive.DeleteFiles(files_);
         archive.Close();
     }
@@ -152,27 +152,27 @@ archiver::Archiver &archiver::Archiver::Concatenate() {
         throw std::invalid_argument("Please choose three different archives or use append option");
     }
     if (block_size_ == 512) {
-        ArchiveWriter<512, 496, HammingCoder<512, 496>> archive(archive_name_, trunc);
+        HammingWriter512 archive(archive_name_, trunc);
         archive.AddArchive(files_[0]);
         archive.AddArchive(files_[1]);
         archive.Close();
     } else if (block_size_ == 256) {
-        ArchiveWriter<256, 240, HammingCoder<256, 240>> archive(archive_name_, trunc);
+        HammingWriter256 archive(archive_name_, trunc);
         archive.AddArchive(files_[0]);
         archive.AddArchive(files_[1]);
         archive.Close();
     } else if (block_size_ == 128) {
-        ArchiveWriter<128, 120, HammingCoder<128, 120>> archive(archive_name_, trunc);
+        HammingWriter128 archive(archive_name_, trunc);
         archive.AddArchive(files_[0]);
         archive.AddArchive(files_[1]);
         archive.Close();
     } else if (block_size_ == 64) {
-        ArchiveWriter<64, 56, HammingCoder<64, 56>> archive(archive_name_, trunc);
+        HammingWriter64 archive(archive_name_, trunc);
         archive.AddArchive(files_[0]);
         archive.AddArchive(files_[1]);
         archive.Close();
     } else if (block_size_ == 32) {
-        ArchiveWriter<32, 24, HammingCoder<32, 24>> archive(archive_name_, trunc);
+        HammingWriter32 archive(archive_name_, trunc);
         archive.AddArchive(files_[0]);
         archive.AddArchive(files_[1]);
         archive.Close();

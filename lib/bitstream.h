@@ -32,7 +32,7 @@ namespace archive_stream {
  *
  *
  *
- *  After finishing using ArchiveReader/ArchiveWriter,
+ *  After finishing using ArchiveReader/ArchiveWriter, must call Close()
  */
 
 const size_t kFileNameBytes = 32;
@@ -40,6 +40,9 @@ const size_t kFileSizeBytes = 8;
 
 const std::string kTempName = "__temp_";
 
+/*
+ * Archive Writer
+ * */
 template<size_t total_block_bits,
     size_t information_bits,
     typename Coder>
@@ -52,7 +55,6 @@ class ArchiveWriter {
     ~ArchiveWriter();
     bool AddFile(const std::string &filename);
     bool AddFiles(const std::vector<std::string> &filenames);
-    void DeleteArchive();
     void Close();
     void WriteFileName(const std::string& filename);
     void WriteFileSize(uint64_t file_size);
@@ -62,7 +64,6 @@ class ArchiveWriter {
     std::string archive_filename_;
 
     char block_[kInformationBytes]{};
-    //std::bitset<total_block_bits> encoded_block_;
 
     size_t last_written_byte_ = 0;
     bool EncodeBlock();
@@ -106,14 +107,12 @@ void ArchiveWriter<total_block_bits, information_bits, Coder>::WriteFileName(con
 
 template<size_t total_block_bits, size_t information_bits, typename Coder>
 bool ArchiveWriter<total_block_bits, information_bits, Coder>::EncodeBlock() {
-    //if (last_written_byte_ != 0) {
         char encoded[kTotalBlockBytes]{};
         Coder::Encode(block_, encoded);
-        for (auto c : encoded) { //TODO
-            out_ << c;
+        for (auto c : encoded) {
+            out_.put(c);
         }
     last_written_byte_ = 0;
-    //}
     std::fill(block_, block_ + kInformationBytes, NULL);
     return true;
 }
@@ -129,11 +128,76 @@ bool ArchiveWriter<total_block_bits, information_bits, Coder>::WriteByte(char c)
     return true;
 }
 
+
 template<size_t total_block_bits, size_t information_bits, typename Coder>
-void ArchiveWriter<total_block_bits, information_bits, Coder>::DeleteArchive() {
-    this->Close();
-    std::filesystem::remove(archive_filename_);
+ArchiveWriter<total_block_bits, information_bits, Coder>::ArchiveWriter(const std::string &filename,
+                                                                        bool trunc) {
+    if (total_block_bits % 8 != 0 || information_bits % 8 != 0) {
+        throw std::logic_error("Could not open/create archive with given template parameters: " +
+            std::to_string(total_block_bits) +
+            std::to_string(information_bits) + '\n');
+    }
+    archive_filename_ = filename;
+    auto mode = ((trunc) ? std::ios::trunc : std::ios::app);
+    this->out_ = std::ofstream(filename, std::ios::binary | std::ios::out | mode);
+    if (!out_.is_open()) {
+        std::cerr << "Could not open archive with name: " + filename + '\n';
+        throw std::invalid_argument("Could not open archive with name: " + filename + '\n');
+    }
 }
+
+template<size_t total_block_bits, size_t information_bits, typename Coder>
+bool ArchiveWriter<total_block_bits, information_bits, Coder>::AddFile(const std::string &filename) {
+    uint64_t file_size = std::ifstream(filename, std::ios::ate).tellg();
+    std::ifstream in = std::ifstream(filename, std::ios::binary);
+    if (!in.is_open()) {
+        std::cerr << "Could not open file for putting into archive: " + filename + '\n';
+        return false;
+    }
+    /*
+     * Write header
+     */
+    WriteFileName(filename);
+    WriteFileSize(file_size);
+    char byte;
+    while (in.get(byte)) {
+        WriteByte(byte);
+    }
+    while(last_written_byte_!=0){
+        WriteByte(0);
+    }
+    return true;
+}
+
+template<size_t total_block_bits, size_t information_bits, typename Coder>
+bool ArchiveWriter<total_block_bits, information_bits, Coder>::AddFiles(const std::vector<std::string> &filenames) {
+    bool flag = false;
+    for (auto filename : filenames) {
+        if(!AddFile(filename)){
+            flag = true;
+        }
+    }
+    return !flag;
+}
+
+template<size_t total_block_bits, size_t information_bits, typename Coder>
+void ArchiveWriter<total_block_bits, information_bits, Coder>::Close() {
+    if (last_written_byte_ != 0) {
+        EncodeBlock();
+    }
+    out_.close();
+}
+
+
+template<size_t total_block_bits, size_t information_bits, typename Coder>
+ArchiveWriter<total_block_bits, information_bits, Coder>::~ArchiveWriter() {
+    this->Close();
+}
+
+
+/*
+ * Archive reader
+ * */
 
 template<size_t total_block_bits,
     size_t information_bits,
@@ -154,7 +218,6 @@ class ArchiveReader {
  private:
     std::ifstream in_{};
     std::string archive_filename_;
-    //std::bitset<total_block_bits> block_;
     char decoded_[kInformationBytes]{};
     size_t last_decoded_byte = kInformationBytes;
 
@@ -354,10 +417,8 @@ void ArchiveReader<total_block_bits, information_bits, Coder>::ExtractFiles() {
 template<size_t total_block_bits, size_t information_bits, typename Coder>
 void ArchiveReader<total_block_bits, information_bits, Coder>::ExtractFiles(const std::vector<std::string> &filenames) {
     std::string temporary_name = archive_filename_ + kTempName;
-    //ArchiveWriter<total_block_bits, information_bits, Coder> temporary_archive(temporary_name, true, true);
     std::ofstream temp(temporary_name, std::ios::binary | std::ios::out | std::ios::trunc);
     if (!temp.is_open()) {
-        //throw std::runtime_error("Could not open temporary archive");
         return;
     }
     try {
@@ -387,7 +448,6 @@ void ArchiveReader<total_block_bits, information_bits, Coder>::DeleteFiles(const
     std::string temporary_name = archive_filename_ + kTempName;
     std::ofstream temp(temporary_name, std::ios::binary | std::ios::out | std::ios::trunc);
     if (!temp.is_open()) {
-        //throw std::runtime_error("Could not open temporary archive");
         return;
     }
     try {
@@ -418,79 +478,13 @@ void ArchiveReader<total_block_bits, information_bits, Coder>::Close() {
 }
 
 template<size_t total_block_bits, size_t information_bits, typename Coder>
-ArchiveWriter<total_block_bits, information_bits, Coder>::ArchiveWriter(const std::string &filename,
-                                                                        bool trunc) {
-    if (total_block_bits % 8 != 0 || information_bits % 8 != 0) {
-        throw std::logic_error("Could not open/create archive with given template parameters: " +
-            std::to_string(total_block_bits) +
-            std::to_string(information_bits) + '\n');
-    }
-    archive_filename_ = filename;
-    auto mode = ((trunc) ? std::ios::trunc : std::ios::app);
-    this->out_ = std::ofstream(filename, std::ios::binary | std::ios::out | mode);
-    if (!out_.is_open()) {
-        std::cerr << "Could not open archive with name: " + filename + '\n';
-        throw std::invalid_argument("Could not open archive with name: " + filename + '\n');
-    }
-}
-
-template<size_t total_block_bits, size_t information_bits, typename Coder>
-bool ArchiveWriter<total_block_bits, information_bits, Coder>::AddFile(const std::string &filename) {
-    uint64_t file_size = std::ifstream(filename, std::ios::ate).tellg();
-    std::ifstream in = std::ifstream(filename, std::ios::binary);
-    if (!in.is_open()) {
-        std::cerr << "Could not open file for putting into archive: " + filename + '\n';
-        return false;
-    }
-    // Write header
-    WriteFileName(filename);
-    WriteFileSize(file_size);
-    char byte;
-    while (in.get(byte)) {
-        WriteByte(byte);
-    }
-    while(last_written_byte_!=0){
-        WriteByte(0);
-    }
-    return true;
-}
-
-template<size_t total_block_bits, size_t information_bits, typename Coder>
-bool ArchiveWriter<total_block_bits, information_bits, Coder>::AddFiles(const std::vector<std::string> &filenames) {
-    bool flag = false;
-    for (auto filename : filenames) {
-        if(!AddFile(filename)){
-            flag = true;
-        }
-    }
-    return !flag;
-}
-
-template<size_t total_block_bits, size_t information_bits, typename Coder>
-void ArchiveWriter<total_block_bits, information_bits, Coder>::Close() {
-    if (last_written_byte_ != 0) {
-        EncodeBlock();
-    }
-    out_.close();
-}
-
-template<size_t total_block_bits, size_t information_bits, typename Coder>
 ArchiveReader<total_block_bits, information_bits, Coder>::~ArchiveReader() {
-    this->Close();
-}
-
-template<size_t total_block_bits, size_t information_bits, typename Coder>
-ArchiveWriter<total_block_bits, information_bits, Coder>::~ArchiveWriter() {
     this->Close();
 }
 
 template<size_t total_block_bits, size_t information_bits, typename Coder>
 void ArchiveReader<total_block_bits, information_bits, Coder>::WriteRawBytes(std::ofstream& out,
                                                                              uint64_t bytes_count) {
-//    if (bytes_count % kTotalBlockBytes !=0) {
-//        throw std::invalid_argument("Count of bytes written to file must be divisible by block size");
-//    }
-//TODO
     for(uint64_t i = 0; i < bytes_count; ++i) {
         out.put(in_.get());
     }

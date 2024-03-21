@@ -68,16 +68,16 @@ build CMakeFiles/labwork6.dir/src/hamarc.cpp.obj: CXX_COMPILER__labwork6_unscann
 
 
 #############################################
-# Link the executable labwork6.exe
+# Link the executable bin\labwork6.exe
 
-build labwork6.exe: CXX_EXECUTABLE_LINKER__labwork6_Debug CMakeFiles/labwork6.dir/src/hamarc.cpp.obj | argparser/libargparser.a lib/libarchiver.a || argparser/libargparser.a copy_resources lib/libarchiver.a
+build bin/labwork6.exe: CXX_EXECUTABLE_LINKER__labwork6_Debug CMakeFiles/labwork6.dir/src/hamarc.cpp.obj | argparser/libargparser.a lib/libarchiver.a || argparser/libargparser.a copy_resources lib/libarchiver.a
   FLAGS = -g
   LINK_LIBRARIES = argparser/libargparser.a  lib/libarchiver.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\labwork6.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
-  TARGET_FILE = labwork6.exe
-  TARGET_IMPLIB = liblabwork6.dll.a
+  TARGET_FILE = bin\labwork6.exe
+  TARGET_IMPLIB = lib\liblabwork6.dll.a
   TARGET_PDB = labwork6.exe.dbg
 
 
@@ -1119,7 +1119,9 @@ build hamarc_tests: phony tests/hamarc_tests.exe
 
 build hamarc_tests.exe: phony tests/hamarc_tests.exe
 
-build labwork6: phony labwork6.exe
+build labwork6: phony bin/labwork6.exe
+
+build labwork6.exe: phony bin/labwork6.exe
 
 build libarchiver.a: phony lib/libarchiver.a
 
@@ -1141,7 +1143,7 @@ build libgtest_main.a: phony lib/libgtest_main.a
 #############################################
 # Folder: C:/Users/lessia/github-classroom/is-itmo-c-23/labwork6-l3sssia/cmake-build-debug
 
-build all: phony copy_resources labwork6.exe lib/all argparser/all src/all tests/all bin/all files/all
+build all: phony copy_resources bin/labwork6.exe lib/all argparser/all src/all tests/all bin/all files/all
 
 # =============================================================================
 
