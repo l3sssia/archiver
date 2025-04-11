@@ -1,1 +1,0 @@
-file(GLOB test_image.jpg test_text)

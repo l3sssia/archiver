@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 project(
-        labwork6
+        hamming-archiver
         VERSION 1.0
         DESCRIPTION "C++ Year 2023 labwork 6"
         LANGUAGES CXX
@@ -14,24 +14,9 @@ add_subdirectory(lib)
 add_subdirectory(argparser)
 add_subdirectory(src)
 add_subdirectory(tests)
-add_subdirectory(bin)
-add_subdirectory(files)
 
-add_custom_target(copy_resources ALL
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${PROJECT_SOURCE_DIR}/files
-        ${PROJECT_BINARY_DIR}/files
-        COMMENT "Copying resources into binary directory")
 
-add_executable(labwork6 src/hamarc.cpp)
-target_link_libraries(labwork6 argparser archiver)
-add_dependencies(labwork6 copy_resources)
+add_executable(hamming-archiver src/hamarc.cpp)
+target_link_libraries(hamming-archiver argparser archiver)
 
 include_directories(lib argparser)
-
-set_target_properties( labwork6
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-)

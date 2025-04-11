@@ -1,1 +1,1 @@
-file(GLOB test_image.jpg test_text)
+file(GLOB test_image.jpg test_text empty_file)

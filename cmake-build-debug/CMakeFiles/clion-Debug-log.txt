@@ -1,4 +1,0 @@
-C:\Users\lessia\AppData\Local\Programs\CLion\bin\cmake\win\x64\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:/Users/lessia/AppData/Local/Programs/CLion/bin/ninja/win/x64/ninja.exe -G Ninja -S C:\Users\lessia\github-classroom\is-itmo-c-23\labwork6-l3sssia -B C:\Users\lessia\github-classroom\is-itmo-c-23\labwork6-l3sssia\cmake-build-debug
--- Configuring done (2.2s)
--- Generating done (0.1s)
--- Build files have been written to: C:/Users/lessia/github-classroom/is-itmo-c-23/labwork6-l3sssia/cmake-build-debug

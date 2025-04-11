@@ -9,14 +9,10 @@ class HammingCoder {
     static void Encode(const char *bytes, char *encoded);
     static bool Decode(const char *encoded, char *decoded);
 
-// private:
-//    template<size_t T>
-//    static void WriteByteToBitset(std::bitset<T>& b, char c, size_t byte_index);
-//    template<size_t T>
-//    static char ReadByteFromBitset(std::bitset<T>& b, size_t byte_index);
     static void WriteBit(char* buf, size_t bit_index, bool bit);
     static bool ReadBit(const char* buf, size_t bit_index);
 };
+
 template<size_t total_block_bits, size_t information_bits>
 bool HammingCoder<total_block_bits, information_bits>::ReadBit(const char *buf, size_t bit_index) {
     size_t byte_index = bit_index / 8;

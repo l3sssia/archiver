@@ -1,5 +1,0 @@
-if(EXISTS "C:/Users/lessia/github-classroom/is-itmo-c-23/labwork6-l3sssia/cmake-build-debug/tests/hamarc_tests[1]_tests.cmake")
-  include("C:/Users/lessia/github-classroom/is-itmo-c-23/labwork6-l3sssia/cmake-build-debug/tests/hamarc_tests[1]_tests.cmake")
-else()
-  add_test(hamarc_tests_NOT_BUILT hamarc_tests_NOT_BUILT)
-endif()
